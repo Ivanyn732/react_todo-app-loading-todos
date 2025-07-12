@@ -1,10 +1,11 @@
 import React from 'react';
 import { Todo } from '../types/Todo';
+import { Filter } from '../types/Filter';
 
 type Props = {
   todos: Todo[];
-  statusFilter: 'all' | 'active' | 'completed';
-  onFilterChange: (filter: 'all' | 'active' | 'completed') => void;
+  statusFilter: Filter;
+  onFilterChange: (filter: Filter) => void;
 };
 
 export const Footer: React.FC<Props> = ({
@@ -14,6 +15,27 @@ export const Footer: React.FC<Props> = ({
 }) => {
   const notCompletedTodos = todos.filter(todo => !todo.completed);
 
+  const filterLinks = [
+    {
+      name: 'All',
+      href: '#/',
+      dataCy: 'FilterLinkAll',
+      value: Filter.All,
+    },
+    {
+      name: 'Active',
+      href: '#/active',
+      dataCy: 'FilterLinkActive',
+      value: Filter.Active,
+    },
+    {
+      name: 'Completed',
+      href: '#/completed',
+      dataCy: 'FilterLinkCompleted',
+      value: Filter.Completed,
+    },
+  ];
+
   return (
     <footer className="todoapp__footer" data-cy="Footer">
       <span className="todo-count" data-cy="TodosCounter">
@@ -22,32 +44,17 @@ export const Footer: React.FC<Props> = ({
 
       {/* Active link should have the 'selected' class */}
       <nav className="filter" data-cy="Filter">
-        <a
-          href="#/"
-          className={`filter__link ${statusFilter === 'all' ? 'selected' : ''}`}
-          data-cy="FilterLinkAll"
-          onClick={() => onFilterChange('all')}
-        >
-          All
-        </a>
-
-        <a
-          href="#/active"
-          className={`filter__link ${statusFilter === 'active' ? 'selected' : ''}`}
-          data-cy="FilterLinkActive"
-          onClick={() => onFilterChange('active')}
-        >
-          Active
-        </a>
-
-        <a
-          href="#/completed"
-          className={`filter__link ${statusFilter === 'completed' ? 'selected' : ''}`}
-          data-cy="FilterLinkCompleted"
-          onClick={() => onFilterChange('completed')}
-        >
-          Completed
-        </a>
+        {filterLinks.map(({ name, href, dataCy, value }) => (
+          <a
+            key={value}
+            href={href}
+            className={`filter__link ${statusFilter === value ? 'selected' : ''}`}
+            data-cy={dataCy}
+            onClick={() => onFilterChange(value)}
+          >
+            {name}
+          </a>
+        ))}
       </nav>
 
       {/* this button should be disabled if there are no completed todos */}

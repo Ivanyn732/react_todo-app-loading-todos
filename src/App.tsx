@@ -8,14 +8,15 @@ import { Header } from './components/Header';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
 import { Error } from './components/Error';
+import { Filter } from './types/Filter';
 
-type StatusFilter = 'all' | 'active' | 'completed';
+type StatusFilter = Filter;
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(Filter.All);
 
   const loadTodos = async () => {
     setLoading(true);
@@ -40,16 +41,16 @@ export const App: React.FC = () => {
     loadTodos();
   }, []);
 
-  const handleFilterChange = (newFilter: 'all' | 'active' | 'completed') => {
+  const handleFilterChange = (newFilter: Filter) => {
     setStatusFilter(newFilter);
   };
 
   const filteredTodos = todos.filter(todo => {
-    if (statusFilter === 'active') {
+    if (statusFilter === Filter.Active) {
       return !todo.completed;
     }
 
-    if (statusFilter === 'completed') {
+    if (statusFilter === Filter.Completed) {
       return todo.completed;
     }
 
